@@ -418,11 +418,11 @@ void output(Info info, int level) {
 	out << "}," << endl;
 }
 
-int main(int argc, char *argv[])//argv[1]
+int main(int argc, char *argv[])//
 {
 	int t = 0;
 	string str1;
-	ifstream in("in.txt");
+	ifstream in(argv[1]);
 	const char *a;
 	int level;
 
@@ -15523,8 +15523,8 @@ int main(int argc, char *argv[])//argv[1]
 	in.close();
 	out << "]" << endl;
 	out.close();
-	ifstream c("out.txt");//argv[2]
-	ofstream s("out1.txt");
+	ifstream c("out.txt");//
+	ofstream s(argv[2]);
 	while (!c.eof()) {
 
 		getline(c, str1);
