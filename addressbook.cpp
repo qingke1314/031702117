@@ -392,9 +392,9 @@ Info dispose(Info info)
 }
 void output(Info info, int level) {
 
-	out << "{" << '"' << "姓名" << '"' << ':' << info.GetName() << '"' << ',' << endl;
+	out << "{" << '"' << "姓名" << '"' << ':' <<'"'<< info.GetName() << '"' << ',' << endl;
 	out << '"' << "手机" << '"' << ':' << '"' << info.GetPhoneNum() << '"' << ',' << endl;
-	out << '"' << "地址" << '"' << ':' << endl;
+	out << '"' << "地址" << '"' << ':';
 	out << '[' << endl;
 	out << '"' << info.GetProvince() << '"' << ',' << endl;
 	out << '"' << info.GetCity() << '"' << ',' << endl;
