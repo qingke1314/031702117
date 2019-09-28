@@ -43,7 +43,7 @@ string Utf8ToGbk(const char* src_str)
 string helper(string key)
 {
 	string address;
-	for (int i = 0; i < str.length(); i++) {
+	for (unsigned int i = 0; i < str.length(); i++) {
 		if (str[i] == key[0] && str[i + 1] == key[1]) {//说明此时地址包括“省/市/县”这个字
 			int index = i + 1;
 			for (int i = 0; i <= index; i++) {
@@ -94,11 +94,11 @@ void Info::SetCounty()
 	bool flag = false;
 	string key[2] = { "县","区" };
 	string address;
-	for (int i = 0; i < str.length(); i++) {
+	for (unsigned int i = 0; i < str.length(); i++) {
 		if ((str[i] == key[0][0] && str[i + 1] == key[0][1]) || (str[i] == key[1][0] && str[i + 1] == key[1][1])) {//说明此时地址包括"县/区”这个字
 			flag = true;
 			int index = i + 1;
-			for (int i = 0; i <= index; i++) {
+			for ( int i = 0; i <= index; i++) {
 				address += str[i];
 			}
 
@@ -138,7 +138,7 @@ void Info::SetProvince()
 		province += str[3];
 		this->province = province;
 		this->province += key;
-		for (int i = 0; i < str.length(); i++) {
+		for (unsigned int i = 0; i < str.length(); i++) {
 			if (str[i] == key[0] && str[i + 1] == key[1]) {//说明此时地址包括“市”这个字
 				str.erase(0, i + 2);
 				flag = true;
@@ -153,7 +153,7 @@ void Info::SetProvince()
 		string key = "省";
 		string province;
 		int f = 1;
-		for (int i = 0; i < str.length(); i++) {
+		for (unsigned int i = 0; i < str.length(); i++) {
 			if (str[i] == key[0] && str[i + 1] == key[1]) {//说明此时地址包括“省”这个字
 				f = 0;
 				int index = i + 1;
@@ -166,7 +166,7 @@ void Info::SetProvince()
 			}
 		}
 		if (f) {
-			for (int i = 0; i < 4; i++)province += str[i];
+			for (unsigned int i = 0; i < 4; i++)province += str[i];
 			this->province = province;
 			this->province += key;
 			str.erase(0, 4);
@@ -178,11 +178,11 @@ void Info::SetTown()
 	bool flag = false;
 	string key[4] = { "镇","乡","街","道" };
 	string address;
-	for (int i = 0; i < str.length(); i++) {
+	for (unsigned int i = 0; i < str.length(); i++) {
 		if ((str[i] == key[0][0] && str[i + 1] == key[0][1]) || (str[i] == key[1][0] && str[i + 1] == key[1][1])) {//说明此时地址包括"乡/镇”这个字
 			flag = true;
 			int index = i + 1;
-			for (int i = 0; i <= index; i++) {
+			for ( int i = 0; i <= index; i++) {
 				address += str[i];
 			}
 
@@ -193,7 +193,7 @@ void Info::SetTown()
 			if (str[i + 2] == key[3][0] && str[i + 3] == key[3][1]) {
 				flag = true;
 				int index = i + 3;
-				for (int i = 0; i <= index; i++) {
+				for ( int i = 0; i <= index; i++) {
 					address += str[i];
 				}
 
@@ -218,11 +218,11 @@ void Info::SetCity()
 	else {
 		string city;
 		int f = 1;
-		for (int i = 0; i < str.length(); i++) {
+		for (unsigned int i = 0; i < str.length(); i++) {
 			if (str[i] == key[0] && str[i + 1] == key[1]) {//说明此时地址包括“市”这个字
 				f = 0;
 				int index = i + 1;
-				for (int i = 0; i <= index; i++) {
+				for ( int i = 0; i <= index; i++) {
 					city += str[i];
 				}
 				this->city = city;
@@ -231,7 +231,7 @@ void Info::SetCity()
 			}
 		}
 		if (f) {
-			for (int i = 0; i < 4; i++)
+			for (unsigned int i = 0; i < 4; i++)
 				city += str[i];
 			this->city = city;
 			this->city += key;
@@ -242,7 +242,7 @@ void Info::SetCity()
 void Info::SetDetail()
 {
 	string det;
-	for (int i = 0; i < str.length() - 1; i++) {
+	for (unsigned int i = 0; i < str.length() - 1; i++) {
 		det += str[i];
 	}
 	this->detail = det;
@@ -291,7 +291,7 @@ string Info::SetName(string str)
 {
 	string name;
 	int count = 0;
-	for (int i = 0; i < str.length() - 1; i++)
+	for (unsigned int i = 0; i < str.length() - 1; i++)
 	{
 		if (str[i] == ',') break;
 		else {
@@ -309,7 +309,7 @@ string Info::SetPhoneNum(string str)
 	int index = 0;
 	int flag = 0;//退出判断
 	string phone;
-	for (int i = 0; i < str.length(); i++)
+	for (unsigned int i = 0; i < str.length(); i++)
 	{
 		if (str[i] >= '0' && str[i] <= '9' && str[i + 1] >= '0' && str[i + 1] <= '9')
 		{
@@ -353,6 +353,7 @@ int SetLevel()
 	x -= 48;
 	if (x)
 		return x;
+	return 0;
 }
 Info disposeLevel1(Info info)
 {
@@ -392,7 +393,7 @@ Info dispose(Info info)
 }
 void output(Info info, int level) {
 
-	out << "{" << '"' << "姓名" << '"' << ':' <<'"'<< info.GetName() << '"' << ',' << endl;
+	out << "{" << '"' << "姓名" << '"' << ':' << '"' << info.GetName() << '"' << ',' << endl;
 	out << '"' << "手机" << '"' << ':' << '"' << info.GetPhoneNum() << '"' << ',' << endl;
 	out << '"' << "地址" << '"' << ':';
 	out << '[' << endl;
@@ -15534,7 +15535,8 @@ int main(int argc, char *argv[])//
 	}
 	c.close();
 	s.close();
-
+	getchar();
+	system("pause");
 	return 0;
 
 }
