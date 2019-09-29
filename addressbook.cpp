@@ -98,7 +98,7 @@ void Info::SetCounty()
 		if ((str[i] == key[0][0] && str[i + 1] == key[0][1]) || (str[i] == key[1][0] && str[i + 1] == key[1][1])) {//说明此时地址包括"县/区”这个字
 			flag = true;
 			int index = i + 1;
-			for ( int i = 0; i <= index; i++) {
+			for (int i = 0; i <= index; i++) {
 				address += str[i];
 			}
 
@@ -182,7 +182,7 @@ void Info::SetTown()
 		if ((str[i] == key[0][0] && str[i + 1] == key[0][1]) || (str[i] == key[1][0] && str[i + 1] == key[1][1])) {//说明此时地址包括"乡/镇”这个字
 			flag = true;
 			int index = i + 1;
-			for ( int i = 0; i <= index; i++) {
+			for (int i = 0; i <= index; i++) {
 				address += str[i];
 			}
 
@@ -193,7 +193,7 @@ void Info::SetTown()
 			if (str[i + 2] == key[3][0] && str[i + 3] == key[3][1]) {
 				flag = true;
 				int index = i + 3;
-				for ( int i = 0; i <= index; i++) {
+				for (int i = 0; i <= index; i++) {
 					address += str[i];
 				}
 
@@ -222,7 +222,7 @@ void Info::SetCity()
 			if (str[i] == key[0] && str[i + 1] == key[1]) {//说明此时地址包括“市”这个字
 				f = 0;
 				int index = i + 1;
-				for ( int i = 0; i <= index; i++) {
+				for (int i = 0; i <= index; i++) {
 					city += str[i];
 				}
 				this->city = city;
