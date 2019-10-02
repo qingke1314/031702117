@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{A3E85086-EA99-4B7B-B7A6-DFE5EA8B22E9}</ProjectGuid>
+    <ProjectGuid>{1E1C9B46-0DD0-494B-BDE7-383C615A9309}</ProjectGuid>
     <RootNamespace>addressbook</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>

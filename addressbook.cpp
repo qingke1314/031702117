@@ -15535,8 +15535,7 @@ int main(int argc, char *argv[])//
 	}
 	c.close();
 	s.close();
-	getchar();
-	system("pause");
+
 	return 0;
 
 }
