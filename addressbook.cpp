@@ -393,7 +393,7 @@ Info dispose(Info info)
 }
 void output(Info info, int level) {
 
-	out << "{" << '"' << "姓名" << '"' << ':' << '"' << info.GetName() << '"' << ',' << endl;
+	out << "{" <<endl<< '"' << "姓名" << '"' << ':' << '"' << info.GetName() << '"' << ',' << endl;
 	out << '"' << "手机" << '"' << ':' << '"' << info.GetPhoneNum() << '"' << ',' << endl;
 	out << '"' << "地址" << '"' << ':';
 	out << '[' << endl;
@@ -419,11 +419,11 @@ void output(Info info, int level) {
 	out << "}," << endl;
 }
 
-int main(int argc, char *argv[])//
+int main()//
 {
 	int t = 0;
 	string str1;
-	ifstream in(argv[1]);
+	ifstream in("input.txt");
 	const char *a;
 	int level;
 
@@ -15525,7 +15525,7 @@ int main(int argc, char *argv[])//
 	out << "]" << endl;
 	out.close();
 	ifstream c("out.txt");//
-	ofstream s(argv[2]);
+	ofstream s("031702117.txt");
 	while (!c.eof()) {
 
 		getline(c, str1);
