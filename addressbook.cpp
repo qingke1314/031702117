@@ -8,7 +8,7 @@ bool iszhixiashi = false;
 string str;//地址信息
 string zhixiashi[4] = { "北京","上海","重庆","天津" };
 ofstream out("out.txt");
-
+int js = 0;
 string GbkToUtf8(const char* src_str)
 {
 	int len = MultiByteToWideChar(CP_ACP, 0, src_str, -1, NULL, 0);
@@ -43,7 +43,7 @@ string Utf8ToGbk(const char* src_str)
 string helper(string key)
 {
 	string address;
-	for (unsigned int i = 0; i < str.length(); i++) {
+	for (int i = 0; i < str.length(); i++) {
 		if (str[i] == key[0] && str[i + 1] == key[1]) {//说明此时地址包括“省/市/县”这个字
 			int index = i + 1;
 			for (int i = 0; i <= index; i++) {
@@ -94,7 +94,7 @@ void Info::SetCounty()
 	bool flag = false;
 	string key[2] = { "县","区" };
 	string address;
-	for (unsigned int i = 0; i < str.length(); i++) {
+	for (int i = 0; i < str.length(); i++) {
 		if ((str[i] == key[0][0] && str[i + 1] == key[0][1]) || (str[i] == key[1][0] && str[i + 1] == key[1][1])) {//说明此时地址包括"县/区”这个字
 			flag = true;
 			int index = i + 1;
@@ -138,7 +138,7 @@ void Info::SetProvince()
 		province += str[3];
 		this->province = province;
 		this->province += key;
-		for (unsigned int i = 0; i < str.length(); i++) {
+		for (int i = 0; i < str.length(); i++) {
 			if (str[i] == key[0] && str[i + 1] == key[1]) {//说明此时地址包括“市”这个字
 				str.erase(0, i + 2);
 				flag = true;
@@ -153,7 +153,7 @@ void Info::SetProvince()
 		string key = "省";
 		string province;
 		int f = 1;
-		for (unsigned int i = 0; i < str.length(); i++) {
+		for (int i = 0; i < str.length(); i++) {
 			if (str[i] == key[0] && str[i + 1] == key[1]) {//说明此时地址包括“省”这个字
 				f = 0;
 				int index = i + 1;
@@ -166,7 +166,7 @@ void Info::SetProvince()
 			}
 		}
 		if (f) {
-			for (unsigned int i = 0; i < 4; i++)province += str[i];
+			for (int i = 0; i < 4; i++)province += str[i];
 			this->province = province;
 			this->province += key;
 			str.erase(0, 4);
@@ -178,7 +178,7 @@ void Info::SetTown()
 	bool flag = false;
 	string key[4] = { "镇","乡","街","道" };
 	string address;
-	for (unsigned int i = 0; i < str.length(); i++) {
+	for (int i = 0; i < str.length(); i++) {
 		if ((str[i] == key[0][0] && str[i + 1] == key[0][1]) || (str[i] == key[1][0] && str[i + 1] == key[1][1])) {//说明此时地址包括"乡/镇”这个字
 			flag = true;
 			int index = i + 1;
@@ -218,7 +218,7 @@ void Info::SetCity()
 	else {
 		string city;
 		int f = 1;
-		for (unsigned int i = 0; i < str.length(); i++) {
+		for (int i = 0; i < str.length(); i++) {
 			if (str[i] == key[0] && str[i + 1] == key[1]) {//说明此时地址包括“市”这个字
 				f = 0;
 				int index = i + 1;
@@ -231,7 +231,7 @@ void Info::SetCity()
 			}
 		}
 		if (f) {
-			for (unsigned int i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 				city += str[i];
 			this->city = city;
 			this->city += key;
@@ -242,7 +242,7 @@ void Info::SetCity()
 void Info::SetDetail()
 {
 	string det;
-	for (unsigned int i = 0; i < str.length() - 1; i++) {
+	for (int i = 0; i < str.length() - 1; i++) {
 		det += str[i];
 	}
 	this->detail = det;
@@ -291,7 +291,7 @@ string Info::SetName(string str)
 {
 	string name;
 	int count = 0;
-	for (unsigned int i = 0; i < str.length() - 1; i++)
+	for (int i = 0; i < str.length() - 1; i++)
 	{
 		if (str[i] == ',') break;
 		else {
@@ -309,7 +309,7 @@ string Info::SetPhoneNum(string str)
 	int index = 0;
 	int flag = 0;//退出判断
 	string phone;
-	for (unsigned int i = 0; i < str.length(); i++)
+	for (int i = 0; i < str.length(); i++)
 	{
 		if (str[i] >= '0' && str[i] <= '9' && str[i + 1] >= '0' && str[i + 1] <= '9')
 		{
@@ -353,7 +353,6 @@ int SetLevel()
 	x -= 48;
 	if (x)
 		return x;
-	return 0;
 }
 Info disposeLevel1(Info info)
 {
@@ -393,35 +392,35 @@ Info dispose(Info info)
 }
 void output(Info info, int level) {
 
-	out << "{" <<endl<< '"' << "姓名" << '"' << ':' << '"' << info.GetName() << '"' << ',' << endl;
-	out << '"' << "手机" << '"' << ':' << '"' << info.GetPhoneNum() << '"' << ',' << endl;
-	out << '"' << "地址" << '"' << ':';
-	out << '[' << endl;
-	out << '"' << info.GetProvince() << '"' << ',' << endl;
-	out << '"' << info.GetCity() << '"' << ',' << endl;
-	out << '"' << info.GetCounty() << '"' << ',' << endl;
-	out << '"' << info.GetTown() << '"' << ',' << endl;
+	out << "{" << '"' << "姓名" << '"' << ':' <<'"'<< info.GetName() << '"' << ',' << endl; js++;
+	out << '"' << "手机" << '"' << ':' << '"' << info.GetPhoneNum() << '"' << ',' << endl; js++;
+	out << '"' << "地址" << '"' << ':' << endl; js++;
+	out << '[' << endl; js++;
+	out << '"' << info.GetProvince() << '"' << ',' << endl; js++;
+	out << '"' << info.GetCity() << '"' << ',' << endl; js++;
+	out << '"' << info.GetCounty() << '"' << ',' << endl; js++;
+	out << '"' << info.GetTown() << '"' << ',' << endl; js++;
 	if (level == 1)
 	{
 		out << '"';
 		out << info.GetDetail();
-		out << '"' << endl;
-		out << ']' << endl;
+		out << '"' << endl; js++;
+		out << ']' << endl; js++;
 
 	}
 	if (level == 2 || level == 3)
 	{
-		out << '"' << info.GetRoad() << '"' << ',' << endl;
-		out << '"' << info.GetHouseNum() << '"' << ',' << endl;;
-		out << '"' << info.GetDetail() << '"' << endl;
-		out << ']' << endl;
+		out << '"' << info.GetRoad() << '"' << ',' << endl; js++;
+		out << '"' << info.GetHouseNum() << '"' << ',' << endl;; js++;
+		out << '"' << info.GetDetail() << '"' << endl; js++;
+		out << ']' << endl; js++;
 	}
-	out << "}," << endl;
+	out << "}," << endl; js++;
 }
 
-int main()//
+int main(int argc, char *argv[])
 {
-	int t = 0;
+	int t = 0, i;
 	string str1;
 	ifstream in("input.txt");
 	const char *a;
@@ -434,15109 +433,11610 @@ int main()//
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}
 	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
-	}
-	while (!in.eof())
+		output(info, level);					break;
+	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
-	}
-	while (!in.eof())
+		output(info, level);					break;
+	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
-	}
-	while (!in.eof())
+		output(info, level);					break;
+	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
-	}
-
-	while (!in.eof())
+		output(info, level);					break;
+	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
-	}
-	while (!in.eof())
+		output(info, level);					break;
+	}	while (!in.eof())
 	{
 		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
-	}
-	while (!in.eof())
+		output(info, level);					break;
+	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
-	}
-	while (!in.eof())
+		output(info, level);					break;
+	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
-	}    	while (!in.eof())
+		output(info, level);					break;
+	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
-	}    	while (!in.eof())
+		output(info, level);					break;
+	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
-	}    	while (!in.eof())
+		output(info, level);					break;
+	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
-	}
-	while (!in.eof())
+		output(info, level);					break;
+	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
+		a = str.c_str();
+		str = Utf8ToGbk(a);
+		level = SetLevel();		Info info;
+		iszhixiashi = false;
+		info = dispose(info);
+		output(info, level);					break;
+	}	while (!in.eof())
+	{
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}	while (!in.eof())
 	{
-		getline(in, str);
-		if (str[0] == 0)break;
+		getline(in, str); if (str[0] == 0)break;
 		a = str.c_str();
 		str = Utf8ToGbk(a);
-		//cout<<str<<endl; 
-		level = SetLevel();
-		Info info;
+		level = SetLevel();		Info info;
 		iszhixiashi = false;
 		info = dispose(info);
-		output(info, level);
-		break;
+		output(info, level);					break;
 	}
 	in.close();
 	out << "]" << endl;
 	out.close();
-	ifstream c("out.txt");//
+	ifstream c("out.txt");
 	ofstream s("031702117.txt");
-	while (!c.eof()) {
+	for (i = 0; i < js; i++) {
 
 		getline(c, str1);
 		a = str1.c_str();
 		str1 = GbkToUtf8(a);
 		s << str1 << endl;
 	}
+	s << "}" << endl; s << "]" << endl;
 	c.close();
 	s.close();
-
 	return 0;
 
 }
-
